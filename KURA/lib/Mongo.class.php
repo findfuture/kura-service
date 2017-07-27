@@ -115,7 +115,7 @@
         }
         
         //设置条数
-        public function limit($limit = '')
+        public function limit($limit = 1)
         {
             $this->_limit = $limit;
             return $this;
