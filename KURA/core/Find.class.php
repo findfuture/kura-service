@@ -49,9 +49,15 @@
                 error(401, lang(401));
             }
             $this->_pro = $urlArr[(LEVEL + 1)];
-            if ( ! is_dir(WORK_PATH.'/'.$this->_pro))
+            if ($this->_pro != 'kura-init' && 
+                    ! is_dir(WORK_PATH.'/'.$this->_pro))
             {
                 error(404, lang(404).$this->_pro);
+            }
+            else if ($this->_pro == 'kura-init')
+            {
+                //初始化项目
+                \service\Init::work($urlArr[(LEVEL + 2)]);
             }
             define('PROPATH', $this->_pro);
             //定义请求模式
@@ -114,13 +120,13 @@
             $path = explode('/', $path);
             //服务文件
             $file = '';
-            foreach ($path as $k => $v)
+            foreach ($path as $key => $val)
             {
-                $file .= $v;
+                $file .= $val;
                 $serviceFile = WORK_PATH.'/'.$file.CLASS_EXT.'.php';
                 if (is_file($serviceFile))
                 {
-                    $this->_action = $path[$k + 1];
+                    $this->_action = $path[$key + 1];
                     $GLOBALS['_SERVICE_FILE'] = $serviceFile.' -> '.$this->_action;
                     return $file;
                 }

@@ -9,7 +9,7 @@
     $GLOBALS['_STIME'] = time();
 
     //禁止输出报错
-    error_reporting(0);
+    //error_reporting(0);
     //捕获系统异常
     register_shutdown_function('shutdownCallback');
     function shutdownCallback()
@@ -75,12 +75,12 @@
     //TOKEN验证
     $before[] = 'token';
     //网关
-    $before[] = 'getway';
+    //$before[] = 'getway';
     
     //配置后置服务，系统运行结束后执行以下配置的服务
     $after = array();
     //记录日志
-    $after[] = 'log';
+    //$after[] = 'log';
 
     //运行库拉
     core\Core::run($before, $after);

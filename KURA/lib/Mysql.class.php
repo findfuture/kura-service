@@ -35,6 +35,7 @@
          */
         private $_select;
         private $_from;
+        private $_table;
         private $_where;
         private $_order_by;
         private $_group_by;
@@ -72,18 +73,12 @@
             return self::$_instance;
         }
         
-        //设置表名
-        public function table($table = '')
-        {
-            $this->_table = '';
-            $this->_table = $table;
-        }
-        
         //组成SQL语句：SELECT `field`
-        public function field($field = '')
+        public function select($field = '')
         {
             $this->_select  = 'SELECT ';
             $this->_join    = '';
+            $this->_where   = '';
             $this->_select .= ($field == '') ? '*' : $field;
             return $this;
         }
@@ -95,8 +90,9 @@
             {
                 error(304, lang(304));
             }
-            $this->_from = '';
-            $this->_from = ' FROM '.$this->_prefix.$table;
+            $this->_from  = '';
+            $this->_from  = ' FROM '.$this->_prefix.$table;
+            $this->_table = $table;
             return $this;
         }
         
@@ -109,7 +105,7 @@
         }
         
         //组成SQL语句：ORDER BY `field` DESC/ASC
-        public function order_by($order_by = '')
+        public function order($order_by = '')
         {
             if ($order_by == '')
             {
@@ -121,7 +117,7 @@
         }
         
         //组成SQL语句：GROUP BY `field`
-        public function group_by($group_by = '')
+        public function group($group_by = '')
         {
             if ($group_by == '')
             {

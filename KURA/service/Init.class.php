@@ -101,4 +101,78 @@
             return TRUE;
         }
         
+        //初始化项目
+        public static function work($work)
+        {
+            //项目目录
+            $workPath = ROOTPATH.'/'.WORK_PATH.'/'.$work;
+            if (is_dir($workPath))
+            {
+                error(105, lang(105));
+            }
+            //创建项目根目录
+            mkdir($workPath);
+            //创建路由文件
+            $php  = "<?php\r\n";
+            $php .= "\r\n";
+            $php .= "    /*\r\n";
+            $php .= "     * 服务路由配置文件\r\n";
+            $php .= "     */\r\n";
+            $php .= "\r\n";
+            $php .= "    \$route = array(\r\n";
+            $php .= "\r\n";
+            $php .= "    );";
+            file_put_contents($workPath.'/route.php', $php);
+            //创建配置文件
+            $php  = "<?php\r\n";
+            $php .= "\r\n";
+            $php .= "    define('CONF', TRUE);\r\n";
+            $php .= "\r\n";
+            $php .= "    /*\r\n";
+            $php .= "     * 项目配置文件\r\n";
+            $php .= "     */\r\n";
+            $php .= "\r\n";
+            $php .= "    \$conf = array();\r\n";
+            $php .= "\r\n";
+            $php .= "    //核心配置区域 =======================================================\r\n";
+            $php .= "\r\n";
+            $php .= "    //服务是否上线，0：测试，1：上线\r\n";
+            $php .= "    //系统会根据此项配置调用不同的参数配置\r\n";
+            $php .= "    \$conf['ONLINE']  = 0;\r\n";
+            $php .= "    //实例ID，在SOA后台查看\r\n";
+            $php .= "    \$conf['EXAMPLE'] = 0;\r\n";
+            $php .= "    //路由白名单，\"*\"表示所有路由均在白名单中，不进行TOKEN验证\r\n";
+            $php .= "    \$conf['WHITEROUTE'] = array(\r\n";
+            $php .= "    );\r\n";
+            $php .= "    //通用HEADER头\r\n";
+            $php .= "    \$conf['HEADER'] = array(\r\n";
+            $php .= "        'Content-type:application/x-www-form-urlencoded;charset=UTF-8'\r\n";
+            $php .= "    );\r\n";
+            $php .= "    //IO过滤配置\r\n";
+            $php .= "    \$conf['IO'] = 'escape|sql|xss';\r\n";
+            $php .= "    //网关白名单\r\n";
+            $php .= "    \$conf['WHITEGETWAY'] = array(\r\n";
+            $php .= "    );\r\n";
+            $php .= "\r\n";
+            $php .= "    return \$conf;";
+            file_put_contents($workPath.'/conf.php', $php);
+            //创建SPI目录
+            $workPath .= '/spi/';
+            mkdir($workPath);
+            //创建SPI公用父类
+            $php  = "<?php\r\n";
+            $php .= "\r\n";
+            $php .= "    namespace ".$work."\spi;\r\n";
+            $php .= "\r\n";
+            $php .= "    class Init {\r\n";
+            $php .= "\r\n";
+            $php .= "        public function __construct(){\r\n";
+            $php .= "\r\n";
+            $php .= "        }\r\n";
+            $php .= "\r\n";
+            $php .= "    }";
+            file_put_contents($workPath.'/Init.class.php', $php);
+            error(106, lang(106));
+        }
+        
     }

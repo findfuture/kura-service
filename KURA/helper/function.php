@@ -110,7 +110,6 @@
         {
             return $instance;
         }
-        $instance->table($table);
         $instance->from($table);
         return $instance;
     }
@@ -144,7 +143,13 @@
     //MONGODB实例
     function M($table = '')
     {
-        
+        $instance = \lib\Mongo::getInstance($table);
+        if ($table == '')
+        {
+            return $instance;
+        }
+        $instance->from($table);
+        return $instance;
     }
     
     //GET

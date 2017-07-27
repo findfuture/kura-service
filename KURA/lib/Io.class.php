@@ -124,7 +124,7 @@
         //SQL注入清理 
         private static function _sqlClear($val)
         {
-            $preg = '/|\'|"|%20|\(|\)|\{|\}|char|insert|update|delete|select|drop|outfile|load_file|show|union|join|execute/is';
+            $preg = '/|char|insert|update|delete|select|drop|outfile|load_file|show|union|join|execute/is';
             return preg_replace($preg, '', $val);
         }
         
