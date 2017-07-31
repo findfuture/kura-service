@@ -35,7 +35,6 @@
          */
         private $_select;
         private $_from;
-        private $_table;
         private $_where;
         private $_order_by;
         private $_group_by;
@@ -351,6 +350,7 @@
         private function _set_name()
         {
             mysqli_query($this->_conn, 'SET NAMES '.$this->_char);
+            mysqli_options($this->_conn,MYSQLI_OPT_INT_AND_FLOAT_NATIVE,true);  
         }
         
     }
