@@ -36,8 +36,8 @@
         private $_select;
         private $_from;
         private $_where;
-        private $_order_by;
-        private $_group_by;
+        private $_order;
+        private $_group;
         private $_limit;
         private $_join;
         
@@ -76,8 +76,6 @@
         public function select($field = '')
         {
             $this->_select  = 'SELECT ';
-            $this->_join    = '';
-            $this->_where   = '';
             $this->_select .= ($field == '') ? '*' : $field;
             return $this;
         }
@@ -89,16 +87,15 @@
             {
                 error(304, lang(304));
             }
+            $this->_table = $this->_prefix.$table;
             $this->_from  = '';
-            $this->_from  = ' FROM '.$this->_prefix.$table;
-            $this->_table = $table;
+            $this->_from  = ' FROM '.$this->_table;
             return $this;
         }
         
         //组成SQL语句：WHERE `field` = 'data'
         public function where($where = '')
         {
-            $this->_where = '';
             $this->_where = ' WHERE '.$where;
             return $this;
         }
@@ -110,8 +107,7 @@
             {
                 return $this;
             }
-            $this->_order_by = '';
-            $this->_order_by = ' ORDER BY '.$order_by;
+            $this->_order = ' ORDER BY '.$order_by;
             return $this;
         }
         
@@ -122,15 +118,13 @@
             {
                 return $this;
             }
-            $this->_group_by = '';
-            $this->_group_by = ' GROUP BY '.$group_by;
+            $this->_group = ' GROUP BY '.$group_by;
             return $this;
         }
         
         //组成SQL语句：LIMIT 10,1
         public function limit($limit = 1)
         {
-            $this->_limit = '';
             $this->_limit = ' LIMIT '.$limit;
             return $this;
         }
@@ -173,7 +167,7 @@
             //初始化SQL
             $sql = '';
             //组成SQL
-            $sql = 'INSERT INTO `'.$this->_prefix.$this->_table.'` ';
+            $sql = 'INSERT INTO `'.$this->_table.'` ';
             //遍历字段
             $field = $value = '(';
             $doc = '';
@@ -206,7 +200,7 @@
         {
             $stime = microtime(TRUE);
             //组成SQL
-            $sql = 'UPDATE `'.$this->_prefix.$this->_table.'` SET ';
+            $sql = 'UPDATE `'.$this->_table.'` SET ';
             $doc = '';
             foreach ($data as $key => $val)
             {
@@ -240,7 +234,7 @@
         public function delete()
         {
             $stime = microtime(TRUE);
-            $sql  = 'DELETE FROM `'.$this->_prefix.$this->_table.'` ';
+            $sql  = 'DELETE FROM `'.$this->_table.'` ';
             $sql .= $this->_where;
             //执行SQL
             if ( ! $this->_conn->query($sql))
@@ -280,6 +274,22 @@
             return $this->_result;
         }
         
+        //替换，没有的话写入，有的话更新
+        public function replace($insert = array(), $update = array())
+        {
+            $sql = 'SELECT * FROM '.$this->_table.$this->_where.' LIMIT 1';
+            $result = $this->_conn->query($sql);
+            if (empty($result->fetch_assoc()))
+            {
+                $this->add($insert);
+            }
+            else
+            {
+                $data = (empty($update)) ? $insert : $update;
+                $this->edit($data);
+            }
+        }
+        
         //组装SQL语句
         private function _createSql()
         {
@@ -290,12 +300,17 @@
                    $this->_from.
                    $this->_join.
                    $this->_where.
-                   $this->_order_by.
+                   $this->_order.
                    $this->_limit.
-                   $this->_group_by;
-            
+                   $this->_group;
             //执行查询
             $this->_result = $this->_conn->query($sql);
+            $this->_table = '';
+            $this->_join  = '';
+            $this->_where = '';
+            $this->_order = '';
+            $this->_group = '';
+            $this->_limit = '';
             $etime = microtime(TRUE);
             $mysql = array(
                 'SQL'  => $sql,
@@ -350,7 +365,7 @@
         private function _set_name()
         {
             mysqli_query($this->_conn, 'SET NAMES '.$this->_char);
-            mysqli_options($this->_conn,MYSQLI_OPT_INT_AND_FLOAT_NATIVE,true);  
+            mysqli_options($this->_conn, MYSQLI_OPT_INT_AND_FLOAT_NATIVE, TRUE);  
         }
         
     }

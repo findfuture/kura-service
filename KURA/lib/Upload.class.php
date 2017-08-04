@@ -137,6 +137,7 @@
                 {
                     L('FTP登录失败', 'upload');
                 }
+                echo $this->_ftpDir;
                 if ($this->_ftpDir != '')
                 {
                     if ( ! @ftp_chdir($Ftp, $this->_ftpDir))

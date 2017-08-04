@@ -75,6 +75,8 @@
             $url = $_SERVER['REQUEST_URI'];
             //拆分URL为数组
             $arr = explode('/', ltrim($url, '/'));
+            array_shift($arr);
+            array_shift($arr);
             $k = array_search($key, $arr);
             if ($k === FALSE)
             {
