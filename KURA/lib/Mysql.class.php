@@ -101,24 +101,24 @@
         }
         
         //组成SQL语句：ORDER BY `field` DESC/ASC
-        public function order($order_by = '')
+        public function order($order = '')
         {
-            if ($order_by == '')
+            if ($order == '')
             {
                 return $this;
             }
-            $this->_order = ' ORDER BY '.$order_by;
+            $this->_order = ' ORDER BY '.$order;
             return $this;
         }
         
         //组成SQL语句：GROUP BY `field`
-        public function group($group_by = '')
+        public function group($group = '')
         {
-            if ($group_by == '')
+            if ($group == '')
             {
                 return $this;
             }
-            $this->_group = ' GROUP BY '.$group_by;
+            $this->_group = ' GROUP BY '.$group;
             return $this;
         }
         
@@ -143,6 +143,7 @@
         //取单条数据
         public function one()
         {
+            $this->_limit = ' LIMIT 1';
             $this->_createSql();
             return $this->_result->fetch_assoc();
         }
@@ -305,7 +306,6 @@
                    $this->_group;
             //执行查询
             $this->_result = $this->_conn->query($sql);
-            $this->_table = '';
             $this->_join  = '';
             $this->_where = '';
             $this->_order = '';

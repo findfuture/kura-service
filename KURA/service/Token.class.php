@@ -45,7 +45,7 @@
                 }
                 else
                 {
-                    $client = (preg_match('/^mq-(.*)/', ROUTE)) ? 'mq' : 'http';
+                    $client = ( ! G('clock')) ? 'http' : 'clock';
                 }
                 define('CLIENT', $client);
                 return TRUE;

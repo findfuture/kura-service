@@ -76,7 +76,7 @@
                 }
                 else
                 {
-                    error(102, lang(102).$file);
+                    return TRUE;
                 }
             }
         }

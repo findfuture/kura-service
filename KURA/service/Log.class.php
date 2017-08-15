@@ -61,7 +61,7 @@
                 //服务文件
                 'SERVICE_FILE' => $GLOBALS['_SERVICE_FILE'],
                 //是否是快照数据
-                'SNAPSHOT' => $GLOBALS['_SNAPSHOT'],
+                'SNAPSHOT' => (isset($GLOBALS['_SNAPSHOT'])) ? $GLOBALS['_SNAPSHOT'] : 0,
                 //服务ID，在网关层设定
                 'SID'      => (isset($GLOBALS['_SID'])) ? $GLOBALS['_SID'] : 0
             );

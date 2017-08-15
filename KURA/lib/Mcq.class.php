@@ -56,7 +56,16 @@
         
         public function get($key)
         {
-            return $this->_conn->get($this->_prefix.$key);
+            $stime = microtime(TRUE);
+            $queue = $this->_conn->get($this->_prefix.$key);
+            $etime = microtime(TRUE);
+            $data = array(
+                'TYPE' => '[读取] -> '.$key,
+                'TIME' => round($etime - $stime, 4),
+                'DATA' => $queue
+            );
+            $GLOBALS['_log']['MQ'][] = $data;
+            return $queue;
         }
         
         public function set($key, $value)

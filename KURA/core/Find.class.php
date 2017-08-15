@@ -18,6 +18,7 @@
     namespace core;
     use core\Route;
     use core\Service;
+    use Hprose\Http\Server;
     
     class Find{
         
@@ -110,7 +111,28 @@
             {
                 return TRUE;
             }
-            $obj->$action();
+            //载入HPROSE
+            if (isset($_SERVER['HTTP_ASYNC']))
+            {
+                define('IS_ASYNC', TRUE);
+                V('hprose/Hprose.php');
+                $server = new Server();
+                //定义中间件
+                $handler = function($name, &$args, $context, $next)
+                {
+                    $_POST  = $args[0];
+                    $result = $next($name, $args, $context);
+                    return $result;
+                };
+                $server->addAsyncMethod($action, $obj);
+                $server->addInvokeHandler($handler);
+                $server->start();
+            }
+            else
+            {
+                define('IS_ASYNC', FALSE);
+                $obj->$action();
+            }
         }
         
         //确定具体的服务文件
