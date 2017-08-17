@@ -74,10 +74,6 @@
                 {
                     require $file;
                 }
-                else
-                {
-                    return TRUE;
-                }
             }
         }
         
