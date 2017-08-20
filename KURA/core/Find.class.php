@@ -98,6 +98,14 @@
             $obj = new $service();
             //执行的方法
             $action = $this->_action;
+            $actionArr = explode('->', $action);
+            $action = $actionArr[0];
+            unset($actionArr[0]);
+            if ( ! empty($actionArr))
+            {
+                //定义反射标识
+                $GLOBALS['_REFLEX'] = TRUE;
+            }
             if ( ! method_exists($obj, $action))
             {
                 error(407, lang(407).$action);
@@ -111,6 +119,22 @@
                 return TRUE;
             }
             $obj->$action();
+            //执行版本反射
+            if (empty($actionArr))
+            {
+                return TRUE;
+            }
+            $service = substr($service, 0, strripos($service, '\\') + 1);
+            foreach ($actionArr as $K => $V)
+            {
+                if ($K == count($actionArr))
+                unset($GLOBALS['_REFLEX']);
+                $newService = $service.$V;
+                $newService = new $newService();
+                $result = isset($GLOBALS['_RETURN']) ? $GLOBALS['_RETURN'] : array();
+                $result = json_decode($result, TRUE);
+                $newService->$action($result['data']);
+            }
         }
         
         //确定具体的服务文件
@@ -124,13 +148,14 @@
             {
                 $file .= $val;
                 $serviceFile = WORK_PATH.'/'.$file.CLASS_EXT.'.php';
-                if (is_file($serviceFile))
+                if ( ! is_file($serviceFile))
                 {
-                    $this->_action = $path[$key + 1];
-                    $GLOBALS['_SERVICE_FILE'] = $serviceFile.' -> '.$this->_action;
-                    return $file;
+                    $file .= '/';
+                    continue;
                 }
-                $file .= '/';
+                $this->_action = $path[$key + 1];
+                $GLOBALS['_SERVICE_FILE'] = $serviceFile.' -> '.$this->_action;
+                return $file;
             }
             return FALSE;
         }

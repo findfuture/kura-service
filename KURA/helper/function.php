@@ -257,13 +257,17 @@
             }
             $json['data'] = $data;
             $data = json_encode($json, JSON_UNESCAPED_UNICODE);
+            $GLOBALS['_RETURN'] = $data;
+            if (isset($GLOBALS['_REFLEX']) && $GLOBALS['_REFLEX'])
+            {
+                return TRUE;
+            }
             //GET模式保存快照
             if (defined('GETWAY') && METHOD == 'GET')
             {
                 //保存无登录状态快照
                 \service\Getway::snapshot($data);
             }
-            $GLOBALS['_RETURN'] = $data;
             echo $data;
         }
     }
