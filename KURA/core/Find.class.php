@@ -124,16 +124,15 @@
             {
                 return TRUE;
             }
-            $service = substr($service, 0, strripos($service, '\\') + 1);
             foreach ($actionArr as $K => $V)
             {
                 if ($K == count($actionArr))
                 unset($GLOBALS['_REFLEX']);
-                $newService = $service.$V;
+                $newService = preg_replace('/(.*)\\\(.*)\\\(.*)/', "$1\\\\$2\\$V\\\\$3", $service);
                 $newService = new $newService();
-                $result = isset($GLOBALS['_RETURN']) ? $GLOBALS['_RETURN'] : array();
-                $result = json_decode($result, TRUE);
-                $newService->$action($result['data']);
+                $result  = isset($GLOBALS['_RETURN']) ? json_decode($GLOBALS['_RETURN'], TRUE) : array();
+                $result  = (empty($result)) ? $result : $result['data'];
+                $newService->$action($result);
             }
         }
         
