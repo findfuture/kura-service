@@ -47,17 +47,10 @@
             }
             $class = str_replace('\\', '/', $class);
             //系统服务自动识别路径
-            if (in_array($name, array('lib', 'core', 'service', 'vendor')))
+            if (in_array($name, array('lib', 'core', 'service')))
             {
                 //插件目录文件名自定义
-                if ($name == 'vendor')
-                {
-                    $file = ROOTPATH.'/KURA/'.$class.'.php';
-                }
-                else
-                {
-                    $file = ROOTPATH.'/KURA/'.$class.CLASS_EXT.'.php';
-                }
+                $file = ROOTPATH.'/KURA/'.$class.CLASS_EXT.'.php';
                 if (is_file($file))
                 {
                     require $file;
@@ -71,9 +64,7 @@
             {
                 $file = WORK_PATH.'/'.$class.CLASS_EXT.'.php';
                 if (is_file($file))
-                {
-                    require $file;
-                }
+                require $file;
             }
         }
         

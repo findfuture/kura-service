@@ -44,9 +44,9 @@
     date_default_timezone_set('PRC');
    
     //系统常量定义
-    const VERSION = '1.0.1';
+    const VERSION     = '2.3.2';
     //版权
-    const COPYRIGHT = '云掌财经';
+    const COPYRIGHT   = '云掌财经';
     //项目配置
     $GLOBALS['_conf'] = array();
     //日志
@@ -69,6 +69,10 @@
     $lang = require LANG_PATH.'/zh-cn.php';
     //加载核心文件
     require 'core/Core'.CLASS_EXT.'.php';
+    //加载自动载入vendor
+    $autoload = ROOTPATH.'/KURA/vendor/autoload.php';
+    if (is_file($autoload))
+        require $autoload;
     
     //配置前置服务，系统运行前会自动启动以下配置的服务
     $before = array();
