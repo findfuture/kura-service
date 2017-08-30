@@ -41,7 +41,7 @@
             \SeasLog::setLogger('soa');
             $timeEnd = microtime(TRUE);
             //日志基本信息
-            $log['INFO'] = array(
+            $log['INFO'] = [
                 //实例ID
                 'EXAMPLE'  => C('EXAMPLE'),
                 //所在环境
@@ -64,7 +64,7 @@
                 'SNAPSHOT' => (isset($GLOBALS['_SNAPSHOT'])) ? $GLOBALS['_SNAPSHOT'] : 0,
                 //服务ID，在网关层设定
                 'SID'      => (isset($GLOBALS['_SID'])) ? $GLOBALS['_SID'] : 0
-            );
+            ];
             $GLOBALS['_ALLTIME']    = $log['INFO']['ATIME'];
             //写日志
             \SeasLog::log(SEASLOG_INFO, json_encode($log));

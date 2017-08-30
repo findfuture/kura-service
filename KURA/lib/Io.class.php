@@ -32,7 +32,7 @@
             $val = $_POST[$key];
             if (is_array($val))
             {
-                $tmp = array();
+                $tmp = [];
                 foreach ($val as $v)
                 $tmp[] = self::_replace(trim($v), $replace);
                 return $tmp;
@@ -139,30 +139,30 @@
                 $val = str_replace("\t", ' ', $val);
             }
             //字符串黑名单
-            $black = array(
-                         'document.cookie' => '',
-                         'document.write'  => '',
-                         '.parentNode'     => '',
-                         '.innerHTML'      => '',
-                         'window.location' => '',
-                         '-moz-binding'    => '',
-                         'alert'           => '',
-                         '<!--'            => '&lt;!--',
-                         '-->'             => '--&gt;',
-                         '<![CDATA['       => '&lt;![CDATA[',
-                         '<comment>'       => '&lt;comment&gt;',
-                     );
+            $black = [
+                'document.cookie' => '',
+                'document.write'  => '',
+                '.parentNode'     => '',
+                '.innerHTML'      => '',
+                'window.location' => '',
+                '-moz-binding'    => '',
+                'alert'           => '',
+                '<!--'            => '&lt;!--',
+                '-->'             => '--&gt;',
+                '<![CDATA['       => '&lt;![CDATA[',
+                '<comment>'       => '&lt;comment&gt;',
+            ];
             //替换黑名单字符串
             $val = str_replace(array_keys($black), array_values($black), $val); 
             //黑名单规则
-            $preg = array(
-                        'javascript\s*:',
-                        'expression\s*(\(|&\#40;)',
-                        'vbscript\s*:',
-                        'Redirect\s+302',
-                        "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?",
-                        '\son([a-z]+)'
-                    );
+            $preg = [
+                'javascript\s*:',
+                'expression\s*(\(|&\#40;)',
+                'vbscript\s*:',
+                'Redirect\s+302',
+                "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?",
+                '\son([a-z]+)'
+            ];
             //替换黑名单规则
             foreach ($preg as $p)
             {

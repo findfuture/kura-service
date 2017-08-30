@@ -114,7 +114,7 @@
                     return TRUE;
                 }
                 $key = 'SOA:H:SNAPSHOT:'.md5(REQUESTURI);
-                $snapshot = array();
+                $snapshot = [];
                 $snapshot['val']  = $data;
                 $snapshot['time'] = time();
                 //判断是否存在该KEY
@@ -125,9 +125,9 @@
                 else
                 {
                     //判断是否超时，这里不用redis的默认超时是因为有可能会造成没有缓存的情况
-                    $data = self::$_Redis->hMget($key, array(
+                    $data = self::$_Redis->hMget($key, [
                         'time'
-                    ));
+                    ]);
                     if (time() - $data['time'] <= 600)
                     {
                         return TRUE;
@@ -148,7 +148,7 @@
          * 该参数主要用于熔断操作
          * $error：错误信息
          */
-        public static function changeApiState($state, $from = 'code', $error = array())
+        public static function changeApiState($state, $from = 'code', $error = [])
         {
             //接口熔断
             if ($state == 3)
@@ -158,24 +158,24 @@
                 if ($from == 'code' || 
                         self::$_Conf['ERRORNUM'] >= self::$_FuseErrorNum)
                 {
-                    self::$_Redis->hMset(self::$_ServiceKey, array(
+                    self::$_Redis->hMset(self::$_ServiceKey, [
                         'STATE'    => $state,
                         'ERRORNUM' => 0
-                    ));
-                    self::$_Redis->hMset('SOA:H:FUSE:'.md5(self::$_Url), array(
+                    ]);
+                    self::$_Redis->hMset('SOA:H:FUSE:'.md5(self::$_Url), [
                         'TIME'    => time(),
                         'MODEL'   => 1,
                         'SUCCESS' => 0,
                         'RETRY'   => 0
-                    ));
+                    ]);
                     $error['SID'] = self::$_Conf['SID'];
                     $error['STATE'] = $state;
                     //设置异常，用于推送给SOA
                     $GLOBALS['_ERROR'] = $error;
                     //通知SOA更新接状态
-                    \lib\Http::send(array(
+                    \lib\Http::send([
                         'url' => SOA.'soa/system/synchApiState.html?token='.SOATOKEN.'&id='.self::$_Conf['SID'].'&state='.$state
-                    ), FALSE);
+                    ], FALSE);
                 }
                 else if (self::$_Conf['STATE'] == 1)
                 {
@@ -201,10 +201,10 @@
                 if ($slow > self::$_DownSlowNum)
                 {
                     //设置接口降级
-                    self::$_Redis->hMset(self::$_ServiceKey, array(
+                    self::$_Redis->hMset(self::$_ServiceKey, [
                         'STATE' => $state,
                         'SLOW'  => 0
-                    ));
+                    ]);
                     //先判断是否有基准快照
                     $key = 'SOA:H:SNAPSHOT:'.md5(REQUESTURI);
                     if ( ! self::$_Redis->exists($key))
@@ -218,15 +218,15 @@
                     //设置异常，用于推送给SOA
                     $GLOBALS['_ERROR'] = $error;
                     //通知SOA更新接状态
-                    \lib\Http::send(array(
+                    \lib\Http::send([
                         'url' => SOA.'soa/system/synchApiState.html?token='.SOATOKEN.'&id='.self::$_Conf['SID'].'&state='.$state
-                    ), FALSE);
+                    ], FALSE);
                 }
                 else
                 {
-                    self::$_Redis->hMset(self::$_ServiceKey, array(
+                    self::$_Redis->hMset(self::$_ServiceKey, [
                         'SLOW' => $slow
-                    ));
+                    ]);
                 }
             }
         }
@@ -297,14 +297,14 @@
                 }
                 //带有用户标识的KEY
                 $USERKEY = self::_userKey();
-                self::changeApiState(4, '', array(
+                self::changeApiState(4, '', [
                     'USERKEY' => $USERKEY,
                     'EID'     => C('EXAMPLE'),
                     'ONLINE'  => C('ONLINE'),
                     'API'     => REQUESTURI,
                     'ATIME'   => $time,
                     'TYPE'    => 3
-                ));
+                ]);
             }
         }
         
@@ -315,14 +315,14 @@
             //如果接口执行时间小于阀值，则表示接口恢复正常
             if ($atime < self::$_DownSlowTime)
             {
-                self::$_Redis->hMset(self::$_ServiceKey, array(
+                self::$_Redis->hMset(self::$_ServiceKey, [
                     'STATE' => 1,
                     'SLOW'  => 0
-                ));
+                ]);
                 //通知SOA更新接状态
-                \lib\Http::send(array(
+                \lib\Http::send([
                     'url' => SOA.'soa/system/synchApiState.html?token='.SOATOKEN.'&id='.self::$_Conf['SID'].'&state=1'
-                ), FALSE);
+                ], FALSE);
             }
         }
         
@@ -330,10 +330,10 @@
         private static function _checkDeveloper()
         {
             //目前客户端SDK只开放给web/wap
-            if ( ! in_array(CLIENT, array(
+            if ( ! in_array(CLIENT, [
                 'web',
                 'wap'
-            )))
+            ]))
             {
                 return TRUE;
             }
@@ -466,12 +466,12 @@
             if ( ! $conf)
             {
                 //初始化
-                self::$_Redis->hMset($key, array(
+                self::$_Redis->hMset($key, [
                     'TIME'    => time(),
                     'MODEL'   => 1,
                     'SUCCESS' => 0,
                     'RETRY'   => 0
-                ));
+                ]);
                 //读取快照
                 self::readSnapShot();
                 return TRUE;
@@ -482,9 +482,9 @@
                 //判断是否超过熔断超时，如果超过则设置为半开
                 if (time() - $conf['TIME'] >= self::$_FuseTimeOut)
                 {
-                    self::$_Redis->hMset($key, array(
+                    self::$_Redis->hMset($key, [
                         'MODEL' => 0
-                    ));
+                    ]);
                 }
                 //读取快照
                 self::readSnapShot();
@@ -499,23 +499,23 @@
                     //移除熔断
                     self::$_Redis->delete($key);
                     //更新接口状态
-                    self::$_Redis->hMset(self::$_ServiceKey, array(
+                    self::$_Redis->hMset(self::$_ServiceKey, [
                         'STATE'    => 1,
                         'ERRORNUM' => 0
-                    ));
+                    ]);
                     //通知SOA更新接状态
-                    \lib\Http::send(array(
+                    \lib\Http::send([
                         'url' => SOA.'soa/system/synchApiState.html?token='.SOATOKEN.'&id='.self::$_Conf['SID'].'&state=1'
-                    ), FALSE);
+                    ], FALSE);
                 }
                 //否则清空重试次数和成功次数，再次检测成功率
                 else
                 {
                     //更新接口状态
-                    self::$_Redis->hMset($key, array(
+                    self::$_Redis->hMset($key, [
                         'RETRY'   => 0,
                         'SUCCESS' => 0
-                    ));
+                    ]);
                     //读取快照
                     self::readSnapShot();
                 }

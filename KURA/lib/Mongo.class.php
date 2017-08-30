@@ -51,7 +51,7 @@
             }
             $this->_conn   = $Mongo->$conf[3];
             $this->_prefix = $conf[5];
-            $this->_where  = array();
+            $this->_where  = [];
         }
         
         //防止克隆
@@ -70,13 +70,13 @@
         //设置字段
         public function select($fields = '')
         {
-            $this->_select = array();
+            $this->_select = [];
             if ($fields == '')
             {
                 return $this;
             }
             $arr = explode(',', $fields);
-            $tmp = array();
+            $tmp = [];
             foreach ($arr as $field)
             {
                 $tmp[$field] = 1;
@@ -97,14 +97,14 @@
         public function order($order = '')
         {
             $arr = explode(' ', $order);
-            $this->_order = array(
+            $this->_order = [
                 $arr[0] => (strtolower($arr['1']) == 'desc' ? -1 : 1)
-            );
+            ];
             return $this;
         }
         
         //设置条件
-        public function where($where = array())
+        public function where($where = [])
         {
             if (empty($where))
             {
@@ -122,21 +122,21 @@
         }
         
         //增加
-        public function add($data = array())
+        public function add($data = [])
         {
             $table = $this->_from;
             $this->_conn->$table->insert($data);
-            $this->_where = array();
+            $this->_where = [];
         }
         
         //编辑
-        public function edit($data = array())
+        public function edit($data = [])
         {
             $table = $this->_from;
-            $this->_conn->$table->update($this->_where, array(
+            $this->_conn->$table->update($this->_where, [
                 '$set' => $data
-            ));
-            $this->_where = array();
+            ]);
+            $this->_where = [];
         }
         
         //删除
@@ -144,7 +144,7 @@
         {
             $table = $this->_from;
             $this->_conn->$table->remove($this->_where);
-            $this->_where = array();
+            $this->_where = [];
         }
         
         //查询全部
@@ -169,7 +169,7 @@
                     $result->skip(trim($arr[0]));
                 }
             }
-            $tmp = array();
+            $tmp = [];
             foreach ($result as $row)
             {
                 //排除默认_id
@@ -177,8 +177,8 @@
                 $tmp[] = $row;
             }
              //重置where
-            $this->_where = array();
-            $this->_order = array();
+            $this->_where = [];
+            $this->_order = [];
             $this->_limit = '';
             return $tmp;
         }
@@ -191,8 +191,8 @@
             //排除默认_id
             unset($result['_id']);
             //重置where
-            $this->_where = array();
-            $this->_order = array();
+            $this->_where = [];
+            $this->_order = [];
             $this->_limit = '';
             return $result;
         }
@@ -203,7 +203,7 @@
             $table = $this->_from;
             $count = $this->_conn->$table->find($this->_where)->count();
             //重置where
-            $this->_where = array();
+            $this->_where = [];
             return $count;
         }
         

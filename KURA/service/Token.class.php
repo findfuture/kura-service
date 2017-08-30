@@ -23,14 +23,14 @@
         public static function run()
         {
             //客户端标识列表
-            $client = array(
+            $client = [
                 'ios', 
                 'android', 
                 'web', 
                 'wap', 
                 'tv', 
                 'pc'
-            );
+            ];
             $white = C('WHITEROUTE');
             if ($white === FALSE)
             {

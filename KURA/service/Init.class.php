@@ -39,15 +39,15 @@
             //判断是否需要同步开发人员数据
             $accountHash = ROOTPATH.'/KURA/init/'.md5('account').'.php';
             $account = (is_file($accountHash)) ? 0 : 1;
-            $data = \lib\Http::send(array(
+            $data = \lib\Http::send([
                 'url' => SOA.'soa/system/synch.html?token='.SOATOKEN.'&id='.$example.'&online='.$online.'&account='.$account
-            ), FALSE);
+            ], FALSE);
             if ( ! isset($data['code']) || $data['code'] != 100)
             {
                 return TRUE;
             }
             $data = $data['msg'];
-            $init = array();
+            $init = [];
             $init['STATE'] = $data['state'];
             if ($online)
             {
@@ -88,12 +88,12 @@
              */
             if ($account)
             {
-                $init = array();
+                $init = [];
                 foreach ($data['account'] as $row)
                 {
-                    $init[$row['username']] = array(
+                    $init[$row['username']] = [
                         'token' => md5($row['username'].$row['state'].SOATOKEN)
-                    );
+                    ];
                 }
                 $val = '<?PHP return '.var_export($init, TRUE).';';
                 writeFile($accountHash, $val);

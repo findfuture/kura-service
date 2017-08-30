@@ -47,7 +47,7 @@
         private static $_instance;
         
         //构造函数中链接数据库
-        private function __construct($config = array())
+        private function __construct($config = [])
         {
             //初始化数据库链接配置信息
             $this->_init_config($config);
@@ -63,7 +63,7 @@
         private function __clone(){}
         
         //返回实例入口
-        public static function getInstance($config = array())
+        public static function getInstance($config = [])
         {
             if ( ! (self::$_instance instanceof self))
             {
@@ -153,7 +153,7 @@
         {
             $this->_createSql();
             //临时数组
-            $tmp = array();
+            $tmp = [];
             while (($row = $this->_result->fetch_assoc()) != FALSE) 
             {
                 $tmp[] = $row;
@@ -162,7 +162,7 @@
         }
         
         //插入数据
-        public function add($data = array())
+        public function add($data = [])
         {
             $stime = microtime(TRUE);
             //初始化SQL
@@ -188,16 +188,16 @@
                 error(305, lang(305).$sql.','.mysqli_error($this->_conn));
             }
             $etime = microtime(TRUE);
-            $mysql = array(
+            $mysql = [
                 'SQL'  => $sql,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             $GLOBALS['_log']['MYSQL'][] = $mysql;
             return mysqli_insert_id($this->_conn);
         }
         
         //更新数据
-        public function edit($data = array())
+        public function edit($data = [])
         {
             $stime = microtime(TRUE);
             //组成SQL
@@ -223,10 +223,10 @@
                 error(305, lang(305).$sql.','.mysqli_error($this->_conn));
             }
             $etime = microtime(TRUE);
-            $mysql = array(
+            $mysql = [
                 'SQL'  => $sql,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             $GLOBALS['_log']['MYSQL'][] = $mysql;
             return TRUE;
         }
@@ -243,10 +243,10 @@
                 error(305, lang(305).$sql.','.mysqli_error($this->_conn));
             }
             $etime = microtime(TRUE);
-            $mysql = array(
+            $mysql = [
                 'SQL'  => $sql,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             $GLOBALS['_log']['MYSQL'][] = $mysql;
             return TRUE;
         }
@@ -263,10 +263,10 @@
             //执行SQL
             $this->_result = $this->_conn->query($sql);
             $etime = microtime(TRUE);
-            $mysql = array(
+            $mysql = [
                 'SQL'  => $sql,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             $GLOBALS['_log']['MYSQL'][] = $mysql;
             if ( ! $this->_result)
             {
@@ -276,7 +276,7 @@
         }
         
         //替换，没有的话写入，有的话更新
-        public function replace($insert = array(), $update = array())
+        public function replace($insert = [], $update = [])
         {
             $sql = 'SELECT * FROM '.$this->_table.$this->_where.' LIMIT 1';
             $result = $this->_conn->query($sql);
@@ -312,10 +312,10 @@
             $this->_group = '';
             $this->_limit = '';
             $etime = microtime(TRUE);
-            $mysql = array(
+            $mysql = [
                 'SQL'  => $sql,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             $GLOBALS['_log']['MYSQL'][] = $mysql;
             //如果失败返回错误报告
             if ($this->_result === FALSE)
@@ -325,7 +325,7 @@
         }
         
         //初始化数据库链接配置信息
-        private function _init_config($conf = array())
+        private function _init_config($conf = [])
         {
             if (empty($conf))
             {

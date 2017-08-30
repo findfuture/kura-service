@@ -55,7 +55,7 @@
             $this->_file      = '';
             $this->_inputName = 'upload';
             $this->_allowSize = 2;
-            $this->_allowDoc  = array(
+            $this->_allowDoc  = [
                 'doc',
                 'docx',
                 'xls',
@@ -72,7 +72,7 @@
                 'bmp',
                 'pdf',
                 'swf'
-            );
+            ];
             $this->_path = $path;
             $this->_fileName = $fileName;
             $this->_ftp = FALSE;
@@ -82,7 +82,7 @@
         }
         
         //执行上传
-        public function run($config = array())
+        public function run($config = [])
         {
             //初始化配置
             $this->_config($config);
@@ -156,7 +156,7 @@
         }
         
         //初始化配置
-        private function _config($config = array())
+        private function _config($config = [])
         {
             if (isset($config['inputName']))
             {
@@ -228,7 +228,7 @@
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $type  = finfo_file($finfo, $this->_file['tmp_name']);
             //MIME对照表
-            $mime  = array(
+            $mime  = [
                 '3gp'     => 'video/3gpp', 'ai' => 'application/postscript',
                 'aif'     => 'audio/x-aiff', 'aifc' => 'audio/x-aiff',
                 'aiff'    => 'audio/x-aiff', 'asc' => 'text/plain',
@@ -355,7 +355,7 @@
                 "wap"     => "text/vnd.wap.wml wml", "mrp" => "application/mrp",
                 "wma"     => "audio/x-ms-wma",
                 "lrc"     => "application/lrc"
-            );
+            ];
             //截取后缀
             $doc = substr($file, strrpos($file, '.') + 1, strlen($file));
             $doc = strtolower($doc);

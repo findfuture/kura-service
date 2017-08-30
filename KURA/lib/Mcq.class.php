@@ -59,11 +59,11 @@
             $stime = microtime(TRUE);
             $queue = $this->_conn->get($this->_prefix.$key);
             $etime = microtime(TRUE);
-            $data = array(
+            $data = [
                 'TYPE' => '[读取] -> '.$key,
                 'TIME' => round($etime - $stime, 4),
                 'DATA' => $queue
-            );
+            ];
             $GLOBALS['_log']['MQ'][] = $data;
             return $queue;
         }
@@ -74,11 +74,11 @@
             $stime = microtime(TRUE);
             $this->_conn->set($this->_prefix.$key, $val, MEMCACHE_COMPRESSED, 0);
             $etime = microtime(TRUE);
-            $data = array(
+            $data = [
                 'TYPE' => '[写入] -> '.$key,
                 'TIME' => round($etime - $stime, 4),
                 'DATA' => $value
-            );
+            ];
             $GLOBALS['_log']['MQ'][] = $data;
         }
         

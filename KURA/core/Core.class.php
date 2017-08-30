@@ -22,7 +22,7 @@
     class Core{
         
         //初始化库拉
-        public static function run($before = array(), $after = array())
+        public static function run($before = [], $after = [])
         {
             //自动加载
             spl_autoload_register('Core\Core::autoload');

@@ -71,7 +71,7 @@
             $this->_key = $key;
         }
 
-        public function get($param = array())
+        public function get($param = [])
         {
             //缓存名称
             $key  = $this->_prefix;
@@ -130,16 +130,16 @@
                 break;
             }
             $etime = microtime(TRUE);
-            $redis = array(
+            $redis = [
                 'TYPE' => '[读取] -> '.$type,
                 'KEY'  => $key,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             $GLOBALS['_log']['REDIS'][] = $redis;
             return $data;
         }
         
-        public function set($param = array())
+        public function set($param = [])
         {
             //缓存名称
             $key  = $this->_prefix;
@@ -193,17 +193,17 @@
                 break;
             }
             $etime = microtime(TRUE);
-            $setData = array(
+            $setData = [
                 'TYPE' => '[写入] -> '.$type,
                 'KEY'  => $key,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
             if (isset($param['data']))
             $setData['DATA'] = $data;
             $GLOBALS['_log']['REDIS'][] = $setData;
         }
         
-        public function del($param = array())
+        public function del($param = [])
         {
             //缓存名称
             $key  = $this->_prefix;
@@ -223,11 +223,11 @@
                 break;
             }
             $etime = microtime(TRUE);
-            $GLOBALS['_log']['REDIS'][] = array(
+            $GLOBALS['_log']['REDIS'][] = [
                 'TYPE' => '[删除] -> '.$type,
                 'KEY'  => $key,
                 'TIME' => round($etime - $stime, 4)
-            );
+            ];
         }
         
     }

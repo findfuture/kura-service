@@ -29,7 +29,7 @@
         protected $_url;
         
         //执行发现
-        public function run($before = array())
+        public function run($before = [])
         {
             //URL地址
             $this->_url = $_SERVER['REQUEST_URI'];
@@ -130,7 +130,7 @@
                 unset($GLOBALS['_REFLEX']);
                 $newService = preg_replace('/(.*)\\\(.*)\\\(.*)/', "$1\\\\$2\\$V\\\\$3", $service);
                 $newService = new $newService();
-                $result  = isset($GLOBALS['_RETURN']) ? json_decode($GLOBALS['_RETURN'], TRUE) : array();
+                $result  = isset($GLOBALS['_RETURN']) ? json_decode($GLOBALS['_RETURN'], TRUE) : [];
                 $result  = (empty($result)) ? $result : $result['data'];
                 $newService->$action($result);
             }

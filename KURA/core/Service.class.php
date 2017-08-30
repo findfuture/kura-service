@@ -20,7 +20,7 @@
     class Service{
         
         //执行服务
-        public static function run($q = array())
+        public static function run($q = [])
         {
             if (empty($q))
             {

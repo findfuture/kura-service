@@ -127,7 +127,7 @@
         }
         
         //配置信息
-        private function _config($config = array())
+        private function _config($config = [])
         {
             //判断是否有自定义参数
             if (isset($config['len']))
@@ -153,7 +153,7 @@
         }
         
         //执行验证码
-        public function run($config = array())
+        public function run($config = [])
         {
             //配置
             $this->_config($config);

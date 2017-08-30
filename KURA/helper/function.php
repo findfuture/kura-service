@@ -96,7 +96,7 @@
                 return FALSE;
             }
             $time = ($time == 0) ? 0 : time() + $time;
-            $val = '<?PHP return '.var_export(array($val, $time), TRUE).';';
+            $val = '<?PHP return '.var_export([$val, $time], TRUE).';';
             writeFile($cache, $val);
             return TRUE;
         }
@@ -217,7 +217,7 @@
     }
     
     //输出JSON数据
-    function json($data = array(), $isJson = FALSE)
+    function json($data = [], $isJson = FALSE)
     {
         //设置输出标识，避免SHUTDOWNCALLBACK重复输出
         $GLOBALS['_JSON'] = TRUE;
@@ -232,7 +232,7 @@
         }
         else
         {
-            $json = array();
+            $json = [];
             if ( ! isset($data['code']))
             {
                 $json['result']['code'] = 100;
@@ -253,7 +253,7 @@
             }
             if ( ! isset($data['list']))
             {
-                $data['list'] = array();
+                $data['list'] = [];
             }
             $json['data'] = $data;
             $data = json_encode($json, JSON_UNESCAPED_UNICODE);
@@ -275,7 +275,7 @@
     //错误提示
     function error($code, $msg)
     {
-        $return = array();
+        $return = [];
         $return['result']['code'] = $code;
         $return['result']['msg']  = $msg;
         exit(json_encode($return, JSON_UNESCAPED_UNICODE));
@@ -418,6 +418,6 @@
             $ip = $_SERVER['REMOTE_ADDR'];
         }
         $long = sprintf("%u",ip2long($ip));
-        $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
+        $ip   = $long ? [$ip, $long] : ['0.0.0.0', 0];
         return $ip[$type];
     }
