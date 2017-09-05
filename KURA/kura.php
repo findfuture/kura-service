@@ -9,18 +9,24 @@
     $GLOBALS['_STIME'] = time();
 
     //禁止输出报错
-    //error_reporting(0);
+    error_reporting(0);
     //捕获系统异常
     register_shutdown_function('shutdownCallback');
     function shutdownCallback()
     {
-        if ( ! defined('GETWAY'))
-        {
-            return TRUE;
-        }
         $error = error_get_last();
         if ( ! empty($error))
         {
+            $runtime  = '';
+            $runtime .= "错误信息：".$error['message']."\r\n";
+            $runtime .= "发生时间：".date('Y-m-d H:i:s', time())."\r\n";
+            $runtime .= "报错文件：".$error['file']."\r\n";
+            $runtime .= "报错行数：".$error['line']."\r\n";
+            $runtime .= "==============================================\r\n";
+            //记录错误日志
+            L($runtime, 'runtime');
+            if ( ! defined('GETWAY'))
+            return TRUE;
             //捕获到异常则熔断接口，代码级错误立即熔断
             \service\Getway::changeApiState(3, 'code', array(
                 'TYPE'   => 2,
@@ -36,6 +42,7 @@
             \service\Getway::readSnapShot();
         }
         //守护进程
+        if (defined('GETWAY'))
         \service\Guard::run();
     }
     //定义页面编码
