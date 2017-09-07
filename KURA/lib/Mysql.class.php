@@ -212,7 +212,7 @@
                 }
                 else
                 {
-                    $sql .= (preg_match('/`?[\w]+`?\s?[+|-]\s?[\d]+/', $val)) ? $val : '"'.$val.'"';
+                    $sql .= (preg_match('/`[\w]+`\s?[+|-]\s?[\d]+/', $val)) ? $val : '"'.$val.'"';
                 }
                 $doc = ',';
             }
