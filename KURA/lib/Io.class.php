@@ -134,17 +134,51 @@
         private static function _xssClear($val)
         {
             $val = rawurldecode($val);
-            if (strpos($val, "\t") !== FALSE)
+            $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
+            $search  = 'abcdefghijklmnopqrstuvwxyz';
+            $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
+            $search .= '1234567890!@#$%^&*()';
+            $search .= '~`";:?+/={}[]-_|\'\\';
+            for ($i = 0; $i < strlen($search); $i++)
             {
-                $val = str_replace("\t", ' ', $val);
+                $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val);
+                $val = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $val);
             }
+            $preg = [
+                'javascript', 
+                'vbscript', 
+                'expression', 
+                'applet', 
+                'meta', 
+                'xml', 
+                'blink', 
+                'link', 
+                'script', 
+                'embed', 
+                'object', 
+                'iframe', 
+                'frame', 
+                'frameset', 
+                'ilayer', 
+                'layer', 
+                'bgsound',
+                'base'
+            ];
+            //替换黑名单规则
+            foreach ($preg as $p)
+            {
+                $val = preg_replace('/[<|&lt;]'.$p.'[>|&gt;](.*)[<|&lt;]\/'.$p.'[>|&gt;]/', '', $val);
+            }
+            //屏蔽事件
+            $val = preg_replace('/\son([a-z]+)=/is', '', $val);
             //字符串黑名单
             $black = [
                 'document.cookie' => '',
                 'document.write'  => '',
                 '.parentNode'     => '',
                 '.innerHTML'      => '',
-                'window.location' => '',
+                'window.location.href' => '',
+                'location.href'   => '',
                 '-moz-binding'    => '',
                 'alert'           => '',
                 '<!--'            => '&lt;!--',
@@ -154,20 +188,6 @@
             ];
             //替换黑名单字符串
             $val = str_replace(array_keys($black), array_values($black), $val); 
-            //黑名单规则
-            $preg = [
-                'javascript\s*:',
-                'expression\s*(\(|&\#40;)',
-                'vbscript\s*:',
-                'Redirect\s+302',
-                "([\"'])?data\s*:[^\\1]*?base64[^\\1]*?,[^\\1]*?\\1?",
-                '\son([a-z]+)'
-            ];
-            //替换黑名单规则
-            foreach ($preg as $p)
-            {
-                $val = preg_replace('/'.$p.'/is', '', $val);
-            }
             return $val;
         }
         
