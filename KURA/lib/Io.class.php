@@ -167,7 +167,7 @@
             //替换黑名单规则
             foreach ($preg as $p)
             {
-                $val = preg_replace('/[<|&lt;]'.$p.'[>|&gt;](.*)[<|&lt;]\/'.$p.'[>|&gt;]/', '', $val);
+                $val = preg_replace('/[<|&lt;]+'.$p.'[>|&gt;]+(.*)[<|&lt;]+\/'.$p.'[>|&gt;]+/', '', $val);
             }
             //屏蔽事件
             $val = preg_replace('/\son([a-z]+)=/is', '', $val);
