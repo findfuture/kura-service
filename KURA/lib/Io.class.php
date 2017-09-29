@@ -169,7 +169,7 @@
                 $val = preg_replace('/[<|&lt;]+'.$p.'[>|&gt;]+(.*)[<|&lt;]+\/'.$p.'[>|&gt;]+/', '', $val);
             }
             //屏蔽事件
-            $val = preg_replace('/\son([a-z]+)=/is', '', $val);
+            $val = preg_replace('/\s?on([a-z]+)=?/is', '', $val);
             //字符串黑名单
             $black = [
                 'document.cookie' => '',
