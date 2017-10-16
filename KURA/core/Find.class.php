@@ -88,28 +88,6 @@
             {
                 error(405, lang(405));
             }
-            $service = str_replace('/', '\\', $service);
-            //服务类
-            if ( ! class_exists($service))
-            {
-                error(406, lang(406).$service);
-            }
-            //初始化类
-            $obj = new $service();
-            //执行的方法
-            $action = $this->_action;
-            $actionArr = explode('->', $action);
-            $action = $actionArr[0];
-            unset($actionArr[0]);
-            if ( ! empty($actionArr))
-            {
-                //定义反射标识
-                $GLOBALS['_REFLEX'] = TRUE;
-            }
-            if ( ! method_exists($obj, $action))
-            {
-                error(407, lang(407).$action);
-            }
             $GLOBALS['_SERVICE'] = 'http://'.$_SERVER['SERVER_NAME'].$this->_url;
             //执行前置任务
             Service::run($before);
@@ -118,21 +96,71 @@
             {
                 return TRUE;
             }
-            $obj->$action();
-            //执行版本反射
-            if (empty($actionArr))
+            $service = str_replace('/', '\\', $service);
+            //执行的方法
+            $action = $this->_action;
+            $actionArr  = preg_split('/(->|=>)/', $action);
+            //真实的方法名称
+            $actionName = $actionArr[0];
+            if (count($actionArr) > 1)
             {
-                return TRUE;
+                //定义反射标识
+                $GLOBALS['_REFLEX'] = TRUE;
             }
+            //遍历路由
             foreach ($actionArr as $K => $V)
             {
-                if ($K == count($actionArr))
-                unset($GLOBALS['_REFLEX']);
-                $newService = preg_replace('/(.*)\\\(.*)\\\(.*)/', "$1\\\\$2\\$V\\\\$3", $service);
-                $newService = new $newService();
-                $result  = isset($GLOBALS['_RETURN']) ? json_decode($GLOBALS['_RETURN'], TRUE) : [];
-                $result  = (empty($result)) ? $result : $result['data'];
-                $newService->$action($result);
+                //判断是否有版本反射
+                if (isset($GLOBALS['_REFLEX']))
+                {
+                    if ($K == count($actionArr))
+                    unset($GLOBALS['_REFLEX']);
+                    //获取映射方式
+                    $mapping = substr($action, strpos($action, $V) + strlen($V), 2);
+                    //指向
+                    if ($mapping == '=>')
+                    {
+                        continue;
+                    }
+                    //继承
+                    else
+                    {
+                        //执行初始的方法
+                        if ($K == 0)
+                        {
+                            $class = new $service();
+                            $class->$actionName();
+                        }
+                        //执行版本方法
+                        else
+                        {
+                            $VService = preg_replace('/(.*)\\\(.*)\\\(.*)/', "$1\\\\$2\\$V\\\\$3", $service);
+                            //服务类
+                            if ( ! class_exists($VService))
+                            {
+                                error(406, lang(406).$VService);
+                            }
+                            $VService = new $VService();
+                            $result   = isset($GLOBALS['_RETURN']) ? json_decode($GLOBALS['_RETURN'], TRUE) : [];
+                            $result   = (empty($result)) ? $result : $result['data'];
+                            $VService->$actionName($result);
+                        }
+                    }
+                }
+                else
+                {
+                    //服务类
+                    if ( ! class_exists($service))
+                    {
+                        error(406, lang(406).$service);
+                    }
+                    $class = new $service();
+                    if ( ! method_exists($class, $actionName))
+                    {
+                        error(407, lang(407).$actionName);
+                    }
+                    $class->$actionName();
+                }
             }
         }
         
