@@ -64,6 +64,16 @@
             define('METHOD', $_SERVER['REQUEST_METHOD']);
             //定义原始URL
             define('REQUESTURI', $this->_url);
+            //获取版本信息
+            if (isset($_SERVER['HTTP_VERSION']))
+            {
+                $version = str_replace('.', '', $_SERVER['HTTP_VERSION']);
+                define('VERSION', 'V'.$version);
+            }
+            else
+            {
+                define('VERSION', 'default');
+            }
             //执行配置初始化，从SOA平台拉取
             Service::run('init');
             //加载公用函数
@@ -99,19 +109,19 @@
             $service = str_replace('/', '\\', $service);
             //执行的方法
             $action = $this->_action;
-            $actionArr  = preg_split('/(->|=>)/', $action);
+            $actionArr = preg_split('/(->|=>)/', $action);
+            if (count($actionArr) == 2 && $actionArr[1] == 'default')
+            {
+                unset($actionArr[1]);
+            }
             //真实的方法名称
             $actionName = $actionArr[0];
             if (count($actionArr) > 1)
             {
                 //定义反射标识
                 $GLOBALS['_REFLEX'] = TRUE;
-            }
-            //遍历路由
-            foreach ($actionArr as $K => $V)
-            {
-                //判断是否有版本反射
-                if (isset($GLOBALS['_REFLEX']))
+                //遍历路由
+                foreach ($actionArr as $K => $V)
                 {
                     if ($K == count($actionArr))
                     unset($GLOBALS['_REFLEX']);
@@ -137,9 +147,7 @@
                             $VService = preg_replace('/(.*)\\\(.*)\\\(.*)/', "$1\\\\$2\\$V\\\\$3", $service);
                             //服务类
                             if ( ! class_exists($VService))
-                            {
-                                error(406, lang(406).$VService);
-                            }
+                            error(406, lang(406).$VService);
                             $VService = new $VService();
                             $result   = isset($GLOBALS['_RETURN']) ? json_decode($GLOBALS['_RETURN'], TRUE) : [];
                             $result   = (empty($result)) ? $result : $result['data'];
@@ -147,20 +155,20 @@
                         }
                     }
                 }
-                else
+            }
+            else
+            {
+                //服务类
+                if ( ! class_exists($service))
                 {
-                    //服务类
-                    if ( ! class_exists($service))
-                    {
-                        error(406, lang(406).$service);
-                    }
-                    $class = new $service();
-                    if ( ! method_exists($class, $actionName))
-                    {
-                        error(407, lang(407).$actionName);
-                    }
-                    $class->$actionName();
+                    error(406, lang(406).$service);
                 }
+                $class = new $service();
+                if ( ! method_exists($class, $actionName))
+                {
+                    error(407, lang(407).$actionName);
+                }
+                $class->$actionName();
             }
         }
         
