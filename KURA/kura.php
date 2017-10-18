@@ -51,7 +51,7 @@
     date_default_timezone_set('PRC');
    
     //系统常量定义
-    const VERSION     = '2.3.2';
+    const APPVERSION  = '2.3.2';
     //版权
     const COPYRIGHT   = '云掌财经';
     //项目配置
@@ -91,7 +91,7 @@
     //配置后置服务，系统运行结束后执行以下配置的服务
     $after = array();
     //记录日志
-    //$after[] = 'log';
+    $after[] = 'log';
 
     //运行库拉
     core\Core::run($before, $after);
