@@ -123,7 +123,7 @@
                 //遍历路由
                 foreach ($actionArr as $K => $V)
                 {
-                    if ($K == count($actionArr))
+                    if (($K + 1) == count($actionArr))
                     unset($GLOBALS['_REFLEX']);
                     //获取映射方式
                     $mapping = substr($action, strpos($action, $V) + strlen($V), 2);
