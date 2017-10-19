@@ -110,23 +110,37 @@
             //执行的方法
             $action = $this->_action;
             $actionArr = preg_split('/(->|=>)/', $action);
-            if (count($actionArr) == 2 && $actionArr[1] == 'default')
+            //如果没有配置路由版本指向并且也没有传递版本则执行默认路由
+            if (count($actionArr) == 2 && 
+                    $actionArr[1] == 'default')
             {
                 unset($actionArr[1]);
             }
             //真实的方法名称
             $actionName = $actionArr[0];
-            if (count($actionArr) > 1)
+            if (count($actionArr) > 1 && VERSION != 'default')
             {
+                //判断当前版本不是最新的版本，则版本只执行到当前设定的版本上，后面的版本忽略
+                if (in_array(VERSION, $actionArr) && 
+                        VERSION != end($actionArr))
+                {
+                    $actionArr = array_slice($actionArr, 0, array_search(VERSION, $actionArr) + 1);
+                }
                 //定义反射标识
                 $GLOBALS['_REFLEX'] = TRUE;
                 //遍历路由
                 foreach ($actionArr as $K => $V)
                 {
+                    $mapping = '';
                     if (($K + 1) == count($actionArr))
-                    unset($GLOBALS['_REFLEX']);
-                    //获取映射方式
-                    $mapping = substr($action, strpos($action, $V) + strlen($V), 2);
+                    {
+                        unset($GLOBALS['_REFLEX']);
+                    }
+                    else
+                    {
+                        //获取映射方式
+                        $mapping = substr($action, strpos($action, $V) + strlen($V), 2);
+                    }
                     //指向
                     if ($mapping == '=>')
                     {
