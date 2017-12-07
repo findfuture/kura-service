@@ -162,7 +162,7 @@
             ];
             foreach ($dom as $d)
             {
-                $val = preg_replace('/[<|&lt;]+'.$d.'[>|&gt;]+(.*)[<|&lt;]+\/'.$d.'[>|&gt;]+/', '', $val);
+                $val = preg_replace('/[<|&lt;]+'.$d.'(.*)[>|&gt;]+(.*)[<|&lt;]+\/'.$d.'[>|&gt;]+/', '', $val);
             }
             //屏蔽事件
             $event = [
